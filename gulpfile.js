@@ -17,7 +17,8 @@ var env,
     htmlSources,
     jsonSources,
     outputDir,
-    sassStyle;
+    sassStyle,
+    imageDir;
 
 env = process.env.NODE_ENV || 'development';
 
@@ -40,6 +41,7 @@ jsSources = [
 sassSources = ['components/sass/style.scss'];
 htmlSources = [outputDir + '*.html'];
 jsonSources = [outputDir + 'js/*.json'];
+imageDir = [outputDir + 'images/**/*.*'];
 
 gulp.task('coffee', function() {
   gulp.src(coffeeSources)
@@ -96,6 +98,16 @@ gulp.task('json', function() {
     .pipe(gulpif(env === 'production', jsonminify()))
     .pipe(gulpif(env === 'production', gulp.dest('builds/production/js')))
     .pipe(connect.reload())
+});
+
+gulp.task('images',function(){
+  var path='./builds/development/images/**/*.';
+  gulp.src([path+'jpg',
+            path+'pdf',
+            path+'gif',
+            path+'png',
+            path+'svg'])
+    .pipe(gulp.dest('./builds/production/images/'))
 });
 
 gulp.task('default', ['html', 'json', 'coffee', 'js', 'compass', 'connect', 'watch']);
